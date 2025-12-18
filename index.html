@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Rider Problem Simulator</title>
+    <style>
+        body {
+            background-color: #f8d7da; /* Light Pink Background */
+            font-family: 'Arial Black', Gadget, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 50px;
+        }
+
+        h1 {
+            font-size: 40px;
+            letter-spacing: 2px;
+            margin-bottom: 50px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+        }
+
+        .input-section {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+        }
+
+        .player-box {
+            width: 45%;
+        }
+
+        .label {
+            font-size: 18px;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        select {
+            width: 100%;
+            padding: 15px;
+            font-size: 18px;
+            border: 2px solid #000;
+            border-radius: 5px;
+            background: white;
+            font-weight: bold;
+        }
+
+        button {
+            background-color: #fff9c4; /* Light Yellow */
+            border: 2px solid #000;
+            padding: 15px 30px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            text-transform: uppercase;
+            margin-bottom: 40px;
+        }
+
+        .result-box {
+            background-color: #fff9c4; /* Light Yellow */
+            border: 1px solid #ddd;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 10px;
+            display: none; /* Hidden until calculated */
+            text-align: left;
+            width: 100%;
+        }
+
+        .result-title {
+            font-weight: bold;
+            font-size: 20px;
+            margin-bottom: 5px;
+        }
+
+        .result-desc {
+            font-family: Arial, sans-serif;
+            font-size: 16px;
+            font-weight: normal;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>2 &nbsp; FREE RIDER PROBLEM SIMULATOR</h1>
+
+    <div class="container">
+        <div class="input-section">
+            <div class="player-box">
+                <div class="label">Member A</div>
+                <select id="playerA">
+                    <option value="Contribute">Contribute</option>
+                    <option value="Slack Off">Slack Off</option>
+                </select>
+            </div>
+            <div class="player-box">
+                <div class="label">Member B</div>
+                <select id="playerB">
+                    <option value="Contribute">Contribute</option>
+                    <option value="Slack Off">Slack Off</option>
+                </select>
+            </div>
+        </div>
+
+        <button onclick="calculate()">Calculate Payoff</button>
+
+        <div id="resOptimum" class="result-box">
+            <div class="result-title">SOCIAL OPTIMUM REACHED!</div>
+            <div class="result-desc">Both members worked hard and earned the highest collective grade. (+3, +3)</div>
+        </div>
+
+        <div id="resNash" class="result-box">
+            <div class="result-title">NASH EQUILIBRIUM (MARKET FAILURE)</div>
+            <div class="result-desc">No one contributed. The project failed and both received zero. (0, 0)</div>
+        </div>
+
+        <div id="resFreeRide" class="result-box">
+            <div class="result-title">FREE-RIDER SUCCESS</div>
+            <div id="freeRideText" class="result-desc"></div>
+        </div>
+
+        <div id="resSucker" class="result-box">
+            <div class="result-title">SUCKER'S PAYOFF</div>
+            <div id="suckerText" class="result-desc"></div>
+        </div>
+    </div>
+
+    <script>
+        function calculate() {
+            // Hide all boxes first
+            document.querySelectorAll('.result-box').forEach(box => box.style.display = 'none');
+            
+            const a = document.getElementById('playerA').value;
+            const b = document.getElementById('playerB').value;
+
+            if (a === "Contribute" && b === "Contribute") {
+                document.getElementById('resOptimum').style.display = 'block';
+            } 
+            else if (a === "Slack Off" && b === "Slack Off") {
+                document.getElementById('resNash').style.display = 'block';
+            } 
+            else if (a === "Slack Off" && b === "Contribute") {
+                document.getElementById('resFreeRide').style.display = 'block';
+                document.getElementById('freeRideText').innerText = "Member A wins! They saved effort while Member B did the work. (+5, -1)";
+            } 
+            else if (a === "Contribute" && b === "Slack Off") {
+                document.getElementById('resSucker').style.display = 'block';
+                document.getElementById('suckerText').innerText = "Member A loses! They did all the work while Member B free-rode. (-1, +5)";
+            }
+        }
+    </script>
+</body>
+</html>
