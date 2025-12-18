@@ -88,7 +88,7 @@
 </head>
 <body>
 
-    <h1>2 &nbsp; FREE RIDER PROBLEM SIMULATOR</h1>
+    <h1>FREE RIDER PROBLEM SIMULATOR</h1>
 
     <div class="container">
         <div class="input-section">
@@ -112,21 +112,21 @@
 
         <div id="resOptimum" class="result-box">
             <div class="result-title">SOCIAL OPTIMUM REACHED!</div>
-            <div class="result-desc">Both members worked hard and earned the highest collective grade. (+3, +3)</div>
+            <div class="result-desc">Both members worked hard. Highest grade achieved! (+3, +3)</div>
         </div>
 
         <div id="resNash" class="result-box">
             <div class="result-title">NASH EQUILIBRIUM (MARKET FAILURE)</div>
-            <div class="result-desc">No one contributed. The project failed and both received zero. (0, 0)</div>
+            <div class="result-desc">No one contributed, therefore there is no work produced. Both receives a grade of zero. (0, 0)</div>
         </div>
 
         <div id="resFreeRide" class="result-box">
-            <div class="result-title">FREE-RIDER SUCCESS</div>
+            <div class="result-title">FREE-RIDER SUCCESS (Member A)</div>
             <div id="freeRideText" class="result-desc"></div>
         </div>
 
         <div id="resSucker" class="result-box">
-            <div class="result-title">SUCKER'S PAYOFF</div>
+            <div class="result-title">FREE-RIDER SUCCESS (Member B)</div>
             <div id="suckerText" class="result-desc"></div>
         </div>
     </div>
@@ -147,11 +147,11 @@
             } 
             else if (a === "Slack Off" && b === "Contribute") {
                 document.getElementById('resFreeRide').style.display = 'block';
-                document.getElementById('freeRideText').innerText = "Member A wins! They saved effort while Member B did the work. (+5, -1)";
+                document.getElementById('freeRideText').innerText = "Member A didn't do anything while Member B did all the work but they received the same grade. (+5, -1)";
             } 
             else if (a === "Contribute" && b === "Slack Off") {
                 document.getElementById('resSucker').style.display = 'block';
-                document.getElementById('suckerText').innerText = "Member A loses! They did all the work while Member B free-rode. (-1, +5)";
+                document.getElementById('suckerText').innerText = "Member A did all the work while Member B didn't do anything but they received the same grade. (-1, +5)";
             }
         }
     </script>
