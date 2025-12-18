@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Group Project Simulation - Free Rider Problem</title>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; padding: 20px; background-color: #f4f4f4; }
+        .container { max-width: 600px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        h2 { color: #333; text-align: center; }
+        .controls { display: flex; justify-content: center; margin-bottom: 20px; }
+        button { padding: 10px 20px; font-size: 16px; cursor: pointer; background-color: #28a745; color: white; border: none; border-radius: 5px; }
+        button:hover { background-color: #218838; }
+        #log { white-space: pre-wrap; background: #222; color: #0f0; padding: 15px; border-radius: 5px; height: 300px; overflow-y: auto; font-family: monospace; }
+        .highlight { color: #ffeb3b; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Group Project Simulation</h2>
+    <p>Scenario: Member A vs. Member B (50% Social Trust)</p>
+    
+    <div class="controls">
+        <button onclick="runSimulation()">Run 10 Rounds</button>
+    </div>
+
+    <div id="log">Click the button to start simulation...</div>
+</div>
+
+<script>
+    // The Payoff Matrix from your project
+    const payoffs = {
+        "Contribute-Contribute": [3, 3],
+        "Contribute-Slack Off": [-1, 5],
+        "Slack Off-Contribute": [5, -1],
+        "Slack Off-Slack Off": [0, 0]
+    };
+
+    function runSimulation() {
+        const log = document.getElementById('log');
+        log.innerHTML = "--- Simulating 10 Rounds (Social Trust: 50%) ---\n\n";
+        
+        for (let i = 1; i <= 10; i++) {
+            // Determine choices (50% chance to contribute)
+            let choiceA = Math.random() < 0.5 ? "Contribute" : "Slack Off";
+            let choiceB = Math.random() < 0.5 ? "Contribute" : "Slack Off";
+            
+            let key = `${choiceA}-${choiceB}`;
+            let result = payoffs[key];
+            
+            let output = `Round ${i}: A(${choiceA}) vs B(${choiceB}) -> Payoff: [${result[0]}, ${result[1]}]\n`;
+            
+            if (choiceA === "Contribute" && choiceB === "Contribute") {
+                output += `>> <span class="highlight">SOCIAL OPTIMUM REACHED!</span> High grades for all.\n`;
+            } else if (choiceA === "Slack Off" && choiceB === "Slack Off") {
+                output += `>> <span class="highlight">NASH EQUILIBRIUM:</span> Market Failure (INC/Fail).\n`;
+            }
+            
+            log.innerHTML += output + "--------------------------------------\n";
+        }
+        log.scrollTop = log.scrollHeight; // Auto-scroll to bottom
+    }
+</script>
+
+</body>
+</html>
