@@ -2,43 +2,76 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Group Project Simulation</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Rider Problem Simulator</title>
     <style>
-        body { font-family: sans-serif; padding: 20px; background: #f4f4f4; text-align: center; }
-        .card { background: white; padding: 20px; border-radius: 8px; display: inline-block; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        select, button { padding: 10px; margin: 10px; width: 80%; }
-        #result { margin-top: 20px; font-weight: bold; padding: 15px; border-radius: 5px; }
-        .optimum { background: #d4edda; color: #155724; }
-        .nash { background: #f8d7da; color: #721c24; }
-    </style>
-</head>
-<body>
-    <div class="card">
-        <h2>Free-Rider Logic</h2>
-        <label>Member A:</label>
-        <select id="a">
-            <option value="Contribute">Contribute</option>
-            <option value="Slack Off">Slack Off</option>
-        </select><br>
-        <label>Member B:</label>
-        <select id="b">
-            <option value="Contribute">Contribute</option>
-            <option value="Slack Off">Slack Off</option>
-        </select><br>
-        <button onclick="play()">Calculate Payoff</button>
-        <div id="result"></div>
-    </div>
+        body {
+            background-color: #f8d7da; /* Light Pink Background */
+            font-family: 'Arial Black', Gadget, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 50px;
+        }
 
-    <script>
-        function play() {
-            const a = document.getElementById('a').value;
-            const b = document.getElementById('b').value;
-            const res = document.getElementById('result');
-            
-            // Logic based on your matrix: (+3,+3), (-1,+5), (+5,-1), (0,0)
-            if (a === "Contribute" && b === "Contribute") {
-                res.className = "optimum";
-                res.innerHTML = "Outcome: (+3, +3)<br>Social Optimum Reached!";
-            } else if (a === "Slack Off" && b === "Slack Off") {
-                res.className = "nash";
-                res.innerHTML
+        h1 {
+            font-size: 40px;
+            letter-spacing: 2px;
+            margin-bottom: 50px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+        }
+
+        .input-section {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+        }
+
+        .player-box {
+            width: 45%;
+        }
+
+        .label {
+            font-size: 18px;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        select {
+            width: 100%;
+            padding: 15px;
+            font-size: 18px;
+            border: 2px solid #000;
+            border-radius: 5px;
+            background: white;
+            font-weight: bold;
+        }
+
+        button {
+            background-color: #fff9c4; /* Light Yellow */
+            border: 2px solid #000;
+            padding: 15px 30px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            text-transform: uppercase;
+            margin-bottom: 40px;
+        }
+
+        .result-box {
+            background-color: #fff9c4; /* Light Yellow */
+            border: 1px solid #ddd;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 10px;
+            display: none; /* Hidden until calculated */
+            text-align: left;
+            width: 100%;
+        }
+
+        .result-title {
+            font-weight: bold
