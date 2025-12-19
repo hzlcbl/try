@@ -54,15 +54,15 @@
 </head>
 <body>
 
-    <h1>FREE RIDER GAME</h1>
-    <h2>do you wish to contribute or should you slack off?</h2>
+	<h1>FREE RIDER PROBLEM SIMULATOR</h1>
 
-    <div class="nav-buttons">
-        <button class="nav-btn" onclick="showTab('gameTab')">Game Room</button>
+	<div class="nav-buttons">
+     <button class="nav-btn" onclick="showTab('mechTab')">Game Mechanics</button>   
+<button class="nav-btn" onclick="showTab('gameTab')">Game Room</button>
         <button class="nav-btn" onclick="showTab('scoreTab')">Score Summary</button>
-    </div>
+</div>
 
-    <div id="gameTab" class="tab-container active">
+<div id="gameTab" class="tab-container active">
         <div class="card">
             <div class="scoreboard">
                 <div>Member A: <span id="scoreA">0</span></div>
@@ -109,7 +109,37 @@
         </div>
     </div>
 
-    <script>
+    <div id="mechTab" class="tab-container">
+        <div class="card">
+            <h2 class="summary-title">GAME MECHANICS</h2>
+			<p style="font-family: Arial, sans-serif; font-size: 14px; line-height: 1.5; font-weight: normal;">In a group project, everyone must contribute their own work to expedite the process and maximize the number of ideas. If a person chooses not to cooperate with their group members, the others will have no choice but to do the remaining work that person left. Though they finished the task, the member who did not contribute will have the same grade as the team members. Of course, it is ideal that all of them decide to contribute, but if none of them choose to cooperate, they will have no output to hand in.</p>
+<h2 style="text-align: center; color: #1a73e8;">STRATEGIC CHOICES</h2>
+    
+    <div style="font-family: Arial, sans-serif; font-size: 14px; line-height: 1.6; font-weight: normal; margin-bottom: 20px;">
+        <p><strong>• Cooperate (Contribute):</strong> If member A and/or B decides to put in an effort, research, and time to complete their assigned portion of the task.</p>
+        <p><strong>• Slack Off (Free-ride):</strong> If member A and/or B decides to do nothing, does not put any effort, or simply submits low-quality work, hoping for others to cover or to fix their job.</p>
+    </div>
+
+    <h3 style="text-align: center;">PAYOFF MATRIX</h3>
+    <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+        <tr>
+            <th style="background: #eee; border: 1px solid #000;">Member A \ Member B</th>
+            <th style="background: #fff9c4; border: 1px solid #000;">Contribute</th>
+            <th style="background: #fff9c4; border: 1px solid #000;">Slack Off</th>
+        </tr>
+        <tr>
+            <td style="background: #fff9c4; border: 1px solid #000; font-weight: bold; text-align: center;">Contribute</td>
+            <td style="border: 1px solid #000; text-align: center;">(+3, +3)<br><small>Social Optimum</small></td>
+            <td style="border: 1px solid #000; text-align: center;">(-1, +5)<br><small>Sucker's Payoff</small></td>
+        </tr>
+        <tr>
+            <td style="background: #fff9c4; border: 1px solid #000; font-weight: bold; text-align: center;">Slack Off</td>
+            <td style="border: 1px solid #000; text-align: center;">(+5, -1)<br><small>Free-Rider Success</small></td>
+            <td style="border: 1px solid #000; text-align: center;">(0, 0)<br><small>Nash Equilibrium</small></td>
+        </tr>
+    </table>
+</div>
+<script>
         let totalA = 0;
         let totalB = 0;
         let roundNumber = 0;
@@ -165,4 +195,6 @@
     </script>
 </body>
 </html>
+
+
 
