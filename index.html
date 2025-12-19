@@ -3,156 +3,155 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Free Rider Problem Simulator</title>
+    <title>Free Rider Game</title>
     <style>
         body {
-            background-color: #f8d7da; /* Light Pink Background */
+            background-color: #f8d7da; /* Pink Background */
             font-family: 'Arial Black', Gadget, sans-serif;
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 50px;
+            padding: 40px;
         }
 
-        h1 {
-            font-size: 40px;
-            letter-spacing: 2px;
-            margin-bottom: 50px;
+        .scoreboard {
+            background: white;
+            padding: 15px;
+            border: 2px solid #000;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            display: flex;
+            gap: 20px;
+            font-size: 20px;
         }
 
         .container {
             width: 100%;
-            max-width: 800px;
+            max-width: 600px;
+            text-align: center;
         }
 
-        .input-section {
+        .selection-row {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
         }
 
-        .player-box {
-            width: 45%;
-        }
-
-        .label {
-            font-size: 18px;
-            margin-bottom: 10px;
-            text-transform: uppercase;
-        }
+        .player-input { width: 45%; }
 
         select {
             width: 100%;
-            padding: 15px;
-            font-size: 18px;
-            border: 2px solid #000;
-            border-radius: 5px;
-            background: white;
+            padding: 10px;
             font-weight: bold;
+            border: 2px solid #000;
         }
 
         button {
-            background-color: #fff9c4; /* Light Yellow */
+            background-color: #fff9c4; /* Yellow */
             border: 2px solid #000;
-            padding: 15px 30px;
-            font-size: 18px;
+            padding: 12px 24px;
             font-weight: bold;
             cursor: pointer;
-            text-transform: uppercase;
-            margin-bottom: 40px;
+            display: block;
+            margin: 10px auto; /* Centered */
         }
 
-        .result-box {
-            background-color: #fff9c4; /* Light Yellow */
-            border: 1px solid #ddd;
+        .result-display {
+            background-color: #fff9c4;
+            border: 2px solid #000;
             padding: 20px;
-            margin-bottom: 15px;
+            margin-top: 20px;
+            min-height: 80px;
             border-radius: 10px;
-            display: none; /* Hidden until calculated */
-            text-align: left;
-            width: 100%;
-        }
-
-        .result-title {
-            font-weight: bold;
-            font-size: 20px;
-            margin-bottom: 5px;
-        }
-
-        .result-desc {
-            font-family: Arial, sans-serif;
-            font-size: 16px;
-            font-weight: normal;
+            display: none;
         }
     </style>
 </head>
 <body>
 
-    <h1>FREE RIDER PROBLEM SIMULATOR</h1>
+    <h1>FREE RIDER GAME</h1>
+
+    <div class="scoreboard">
+        <div>Member A Score: <span id="scoreA">0</span></div>
+        <div>Member B Score: <span id="scoreB">0</span></div>
+    </div>
 
     <div class="container">
-        <div class="input-section">
-            <div class="player-box">
-                <div class="label">Member A</div>
-                <select id="playerA">
+        <div class="selection-row">
+            <div class="player-input">
+                <label>MEMBER A</label>
+                <select id="choiceA">
                     <option value="Contribute">Contribute</option>
                     <option value="Slack Off">Slack Off</option>
                 </select>
             </div>
-            <div class="player-box">
-                <div class="label">Member B</div>
-                <select id="playerB">
+            <div class="player-input">
+                <label>MEMBER B</label>
+                <select id="choiceB">
                     <option value="Contribute">Contribute</option>
                     <option value="Slack Off">Slack Off</option>
                 </select>
             </div>
         </div>
 
-        <button onclick="calculate()">Calculate Payoff</button>
+        <button onclick="playRound()">CALCULATE PAYOFF</button>
+        <button onclick="resetGame()" style="background-color: #ffcccc;">RESET SCORES</button>
 
-        <div id="resOptimum" class="result-box">
-            <div class="result-title">SOCIAL OPTIMUM REACHED!</div>
-            <div class="result-desc">Both members worked hard. Highest grade achieved! (+3, +3)</div>
-        </div>
-
-        <div id="resNash" class="result-box">
-            <div class="result-title">NASH EQUILIBRIUM (MARKET FAILURE)</div>
-            <div class="result-desc">No one contributed, therefore there is no work produced. Both receives a grade of zero. (0, 0)</div>
-        </div>
-
-        <div id="resFreeRide" class="result-box">
-            <div class="result-title">FREE-RIDER SUCCESS (Member A)</div>
-            <div id="freeRideText" class="result-desc"></div>
-        </div>
-
-        <div id="resSucker" class="result-box">
-            <div class="result-title">FREE-RIDER SUCCESS (Member B)</div>
-            <div id="suckerText" class="result-desc"></div>
+        <div id="gameResult" class="result-display">
+            <div id="resultTitle" style="font-size: 20px; margin-bottom: 5px;"></div>
+            <div id="resultDesc" style="font-family: Arial; font-weight: normal;"></div>
         </div>
     </div>
 
     <script>
-        function calculate() {
-            // Hide all boxes first
-            document.querySelectorAll('.result-box').forEach(box => box.style.display = 'none');
+        let totalA = 0;
+        let totalB = 0;
+
+        function playRound() {
+            const a = document.getElementById('choiceA').value;
+            const b = document.getElementById('choiceB').value;
+            const resDiv = document.getElementById('gameResult');
             
-            const a = document.getElementById('playerA').value;
-            const b = document.getElementById('playerB').value;
+            let payA = 0;
+            let payB = 0;
+            let title = "";
+            let desc = "";
 
             if (a === "Contribute" && b === "Contribute") {
-                document.getElementById('resOptimum').style.display = 'block';
-            } 
-            else if (a === "Slack Off" && b === "Slack Off") {
-                document.getElementById('resNash').style.display = 'block';
-            } 
-            else if (a === "Slack Off" && b === "Contribute") {
-                document.getElementById('resFreeRide').style.display = 'block';
-                document.getElementById('freeRideText').innerText = "Member A didn't do anything while Member B did all the work but they received the same grade. (+5, -1)";
-            } 
-            else if (a === "Contribute" && b === "Slack Off") {
-                document.getElementById('resSucker').style.display = 'block';
-                document.getElementById('suckerText').innerText = "Member A did all the work while Member B didn't do anything but they received the same grade. (-1, +5)";
+                payA = 3; payB = 3;
+                title = "SOCIAL OPTIMUM";
+                desc = "Both worked! High grades for both (+3 each).";
+            } else if (a === "Slack Off" && b === "Slack Off") {
+                payA = 0; payB = 0;
+                title = "NASH EQUILIBRIUM";
+                desc = "Both slacked. Project failed (0 each).";
+            } else if (a === "Slack Off" && b === "Contribute") {
+                payA = 5; payB = -1;
+                title = "MEMBER A FREE-RIDES";
+                desc = "A gets the grade without working (+5), B is overworked (-1).";
+            } else {
+                payA = -1; payB = 5;
+                title = "MEMBER B FREE-RIDES";
+                desc = "B gets the grade without working (+5), A is overworked (-1).";
             }
+
+            totalA += payA;
+            totalB += payB;
+
+            document.getElementById('scoreA').innerText = totalA;
+            document.getElementById('scoreB').innerText = totalB;
+            
+            resDiv.style.display = "block";
+            document.getElementById('resultTitle').innerText = title;
+            document.getElementById('resultDesc').innerText = desc;
+        }
+
+        function resetGame() {
+            totalA = 0;
+            totalB = 0;
+            document.getElementById('scoreA').innerText = "0";
+            document.getElementById('scoreB').innerText = "0";
+            document.getElementById('gameResult').style.display = "none";
         }
     </script>
 </body>
