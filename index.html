@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Free Rider Game</title>
+    <title>Free Rider Game - Tabbed View</title>
     <style>
         body {
             background-color: #f8d7da; /* Pink Background */
@@ -14,144 +14,152 @@
             padding: 40px;
         }
 
-        .scoreboard {
-            background: white;
-            padding: 15px;
-            border: 2px solid #000;
-            border-radius: 10px;
-            margin-bottom: 30px;
-            display: flex;
-            gap: 20px;
-            font-size: 20px;
-        }
+        /* TAB SYSTEM */
+        .tab-container { width: 100%; max-width: 700px; display: none; }
+        .active { display: block; }
 
-        .container {
-            width: 100%;
-            max-width: 600px;
-            text-align: center;
-        }
-
-        .selection-row {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 20px;
-        }
-
-        .player-input { width: 45%; }
-
-        select {
-            width: 100%;
-            padding: 10px;
-            font-weight: bold;
-            border: 2px solid #000;
-        }
-
-        button {
-            background-color: #fff9c4; /* Yellow */
-            border: 2px solid #000;
-            padding: 12px 24px;
-            font-weight: bold;
-            cursor: pointer;
-            display: block;
-            margin: 10px auto; /* Centered */
-        }
-
-        .result-display {
+        .nav-buttons { margin-bottom: 20px; }
+        .nav-btn {
             background-color: #fff9c4;
             border: 2px solid #000;
-            padding: 20px;
-            margin-top: 20px;
-            min-height: 80px;
-            border-radius: 10px;
-            display: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-weight: bold;
+            margin: 0 5px;
         }
+
+        /* GAME STYLING */
+        .card { background: white; padding: 25px; border: 2px solid #000; border-radius: 15px; text-align: center; }
+        .scoreboard { display: flex; justify-content: space-around; font-size: 22px; margin-bottom: 20px; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+        
+        select { width: 100%; padding: 10px; font-weight: bold; border: 2px solid #000; margin-top: 5px; }
+        
+        .main-btn {
+            background-color: #fff9c4;
+            border: 2px solid #000;
+            padding: 15px 30px;
+            font-weight: bold;
+            display: block;
+            margin: 20px auto;
+            cursor: pointer;
+        }
+
+        /* TABLE STYLING */
+        table { width: 100%; border-collapse: collapse; background: white; border: 2px solid #000; }
+        th, td { border: 1px solid #000; padding: 12px; text-align: center; font-family: Arial, sans-serif; }
+        th { background-color: #fff9c4; }
+
+        .summary-title { margin-bottom: 20px; text-align: center; }
     </style>
 </head>
 <body>
 
     <h1>FREE RIDER GAME</h1>
 
-    <div class="scoreboard">
-        <div>Member A Score: <span id="scoreA">0</span></div>
-        <div>Member B Score: <span id="scoreB">0</span></div>
+    <div class="nav-buttons">
+        <button class="nav-btn" onclick="showTab('gameTab')">Game Room</button>
+        <button class="nav-btn" onclick="showTab('scoreTab')">Score Summary</button>
     </div>
 
-    <div class="container">
-        <div class="selection-row">
-            <div class="player-input">
-                <label>MEMBER A</label>
-                <select id="choiceA">
-                    <option value="Contribute">Contribute</option>
-                    <option value="Slack Off">Slack Off</option>
-                </select>
+    <div id="gameTab" class="tab-container active">
+        <div class="card">
+            <div class="scoreboard">
+                <div>Member A: <span id="scoreA">0</span></div>
+                <div>Member B: <span id="scoreB">0</span></div>
             </div>
-            <div class="player-input">
-                <label>MEMBER B</label>
-                <select id="choiceB">
-                    <option value="Contribute">Contribute</option>
-                    <option value="Slack Off">Slack Off</option>
-                </select>
+
+            <div style="display: flex; justify-content: space-between;">
+                <div style="width: 45%;">
+                    <label>MEMBER A</label>
+                    <select id="choiceA">
+                        <option value="Contribute">Contribute</option>
+                        <option value="Slack Off">Slack Off</option>
+                    </select>
+                </div>
+                <div style="width: 45%;">
+                    <label>MEMBER B</label>
+                    <select id="choiceB">
+                        <option value="Contribute">Contribute</option>
+                        <option value="Slack Off">Slack Off</option>
+                    </select>
+                </div>
             </div>
+
+            <button class="main-btn" onclick="playRound()">CALCULATE PAYOFF</button>
         </div>
+    </div>
 
-        <button onclick="playRound()">CALCULATE PAYOFF</button>
-        <button onclick="resetGame()" style="background-color: #ffcccc;">RESET SCORES</button>
-
-        <div id="gameResult" class="result-display">
-            <div id="resultTitle" style="font-size: 20px; margin-bottom: 5px;"></div>
-            <div id="resultDesc" style="font-family: Arial; font-weight: normal;"></div>
+    <div id="scoreTab" class="tab-container">
+        <div class="card">
+            <h2 class="summary-title">PROJECT LOG</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Round</th>
+                        <th>Member A</th>
+                        <th>Member B</th>
+                        <th>Outcome Description</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    </tbody>
+            </table>
+            <button class="main-btn" onclick="resetAll()" style="background-color: #ffcccc;">RESET ALL DATA</button>
         </div>
     </div>
 
     <script>
         let totalA = 0;
         let totalB = 0;
+        let roundNumber = 0;
+
+        function showTab(tabId) {
+            document.querySelectorAll('.tab-container').forEach(tab => tab.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+        }
 
         function playRound() {
+            roundNumber++;
             const a = document.getElementById('choiceA').value;
             const b = document.getElementById('choiceB').value;
-            const resDiv = document.getElementById('gameResult');
             
-            let payA = 0;
-            let payB = 0;
-            let title = "";
-            let desc = "";
+            let payA = 0, payB = 0, desc = "";
 
             if (a === "Contribute" && b === "Contribute") {
-                payA = 3; payB = 3;
-                title = "SOCIAL OPTIMUM";
-                desc = "Both worked! High grades for both (+3 each).";
+                payA = 3; payB = 3; desc = "Social Optimum: High standard output.";
             } else if (a === "Slack Off" && b === "Slack Off") {
-                payA = 0; payB = 0;
-                title = "NASH EQUILIBRIUM";
-                desc = "Both slacked. Project failed (0 each).";
-            } else if (a === "Slack Off" && b === "Contribute") {
-                payA = 5; payB = -1;
-                title = "MEMBER A FREE-RIDES";
-                desc = "A gets the grade without working (+5), B is overworked (-1).";
+                payA = 0; payB = 0; desc = "Market Failure: Group project failed.";
+            } else if (a === "Slack Off") {
+                payA = 5; payB = -1; desc = "Member A Free-rides; B is overworked.";
             } else {
-                payA = -1; payB = 5;
-                title = "MEMBER B FREE-RIDES";
-                desc = "B gets the grade without working (+5), A is overworked (-1).";
+                payA = -1; payB = 5; desc = "Member B Free-rides; A is overworked.";
             }
 
             totalA += payA;
             totalB += payB;
 
+            // Update UI
             document.getElementById('scoreA').innerText = totalA;
             document.getElementById('scoreB').innerText = totalB;
+
+            // Add to Table
+            const row = `<tr>
+                <td>${roundNumber}</td>
+                <td>${a} (${payA})</td>
+                <td>${b} (${payB})</td>
+                <td>${desc}</td>
+            </tr>`;
+            document.getElementById('tableBody').innerHTML += row;
             
-            resDiv.style.display = "block";
-            document.getElementById('resultTitle').innerText = title;
-            document.getElementById('resultDesc').innerText = desc;
+            alert("Payoff Calculated! Check 'Score Summary' to see the log.");
         }
 
-        function resetGame() {
-            totalA = 0;
-            totalB = 0;
+        function resetAll() {
+            totalA = 0; totalB = 0; roundNumber = 0;
             document.getElementById('scoreA').innerText = "0";
             document.getElementById('scoreB').innerText = "0";
-            document.getElementById('gameResult').style.display = "none";
+            document.getElementById('tableBody').innerHTML = "";
+            showTab('gameTab');
         }
     </script>
 </body>
